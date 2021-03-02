@@ -1,3 +1,4 @@
+using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,13 +8,20 @@ public class Movement : MonoBehaviour
     [SerializeField] float thrustForce = 0.0f;
     [SerializeField] float rotationThrust = 0.0f;
     [SerializeField] float rotationControlThrust = 0.0f;
+    float startVolume = 0f;
     Rigidbody playerRb;
+    AudioSource audioSource;
+    Coroutine fadeOutCouroutine;
+    Coroutine fadeInCouroutine;
     Transform playerTransform;
 
     // Start is called before the first frame update
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
+
+        startVolume = audioSource.volume;
     }
 
     // Update is called once per frame
@@ -28,8 +36,42 @@ public class Movement : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.W))
         {
-            Debug.Log("Key pressed");
+            FadeInAudioEffect();
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
             playerRb.AddRelativeForce(Vector3.up * thrustForce * Time.deltaTime);
+        }
+        else
+        {
+            if (Input.GetKeyUp(KeyCode.W) && audioSource.isPlaying)
+            {
+                FadeOutAudioEffect();
+            }
+        }
+    }
+
+    void FadeOutAudioEffect()
+    {
+        Debug.Log("Starting fade out coroutine");
+        if (fadeInCouroutine != null)
+        {
+            StopCoroutine(fadeInCouroutine);
+            fadeInCouroutine = null;
+        }
+        fadeOutCouroutine = StartCoroutine(AudioSourceFadeEffect.FadeAudio(audioSource, 1, 0));
+    }
+
+    void FadeInAudioEffect()
+    {
+        if (fadeOutCouroutine != null)
+        {
+            Debug.Log("Stopping fade out coroutine");
+            StopCoroutine(fadeOutCouroutine);
+            fadeOutCouroutine = null;
+            Debug.Log("Starting fade in coroutine");
+            fadeInCouroutine = StartCoroutine(AudioSourceFadeEffect.FadeAudio(audioSource, 1.5f, startVolume));
         }
     }
 
