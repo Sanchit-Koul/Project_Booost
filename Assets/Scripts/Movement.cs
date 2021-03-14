@@ -8,6 +8,11 @@ public class Movement : MonoBehaviour
     [SerializeField] float thrustForce = 0.0f;
     [SerializeField] float rotationThrust = 0.0f;
     [SerializeField] float rotationControlThrust = 0.0f;
+    [SerializeField] ParticleSystem leftThrustParticles;
+    [SerializeField] ParticleSystem rightThrustParticles;
+    [SerializeField] ParticleSystem leftBoosterParticles;
+    [SerializeField] ParticleSystem rightBoosterParticles;
+
     float startVolume = 0f;
     Rigidbody playerRb;
     AudioSource audioSource;
@@ -42,6 +47,15 @@ public class Movement : MonoBehaviour
                 audioSource.Play();
             }
             playerRb.AddRelativeForce(Vector3.up * thrustForce * Time.deltaTime);
+            
+            if(!leftThrustParticles.isPlaying)
+            {
+                leftThrustParticles.Play();
+            }
+            if(!rightThrustParticles.isPlaying)
+            {
+                rightThrustParticles.Play();
+            }
         }
         else
         {
@@ -50,11 +64,21 @@ public class Movement : MonoBehaviour
                 FadeOutAudioEffect();
             }
         }
+        if(Input.GetKeyUp(KeyCode.W))
+        {
+            if (leftThrustParticles.isPlaying)
+            {
+                leftThrustParticles.Stop();
+            }
+            if (rightThrustParticles.isPlaying)
+            {
+                rightThrustParticles.Stop();
+            }
+        }
     }
 
     void FadeOutAudioEffect()
     {
-        Debug.Log("Starting fade out coroutine");
         if (fadeInCouroutine != null)
         {
             StopCoroutine(fadeInCouroutine);
@@ -67,10 +91,8 @@ public class Movement : MonoBehaviour
     {
         if (fadeOutCouroutine != null)
         {
-            Debug.Log("Stopping fade out coroutine");
             StopCoroutine(fadeOutCouroutine);
             fadeOutCouroutine = null;
-            Debug.Log("Starting fade in coroutine");
             fadeInCouroutine = StartCoroutine(AudioSourceFadeEffect.FadeAudio(audioSource, 1.5f, startVolume));
         }
     }
@@ -85,6 +107,10 @@ public class Movement : MonoBehaviour
                 transform.Rotate(Vector3.back * rotationThrust * Time.deltaTime);
             //}
             playerRb.AddRelativeForce(Vector3.right * rotationControlThrust * Time.deltaTime);
+            if (!leftBoosterParticles.isPlaying)
+            {
+                leftBoosterParticles.Play();
+            }
         }
         else if (Input.GetKey(KeyCode.A))
         {
@@ -93,6 +119,24 @@ public class Movement : MonoBehaviour
                 transform.Rotate(Vector3.forward * rotationThrust * Time.deltaTime);
             }
             playerRb.AddRelativeForce(Vector3.left * rotationControlThrust * Time.deltaTime);
+            if (!rightBoosterParticles.isPlaying)
+            {
+                rightBoosterParticles.Play();
+            }
+        }
+        if(Input.GetKeyUp(KeyCode.D))
+        {
+            if(leftBoosterParticles.isPlaying)
+            {
+                leftBoosterParticles.Stop();
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.A))
+        {
+            if (rightBoosterParticles.isPlaying)
+            {
+                rightBoosterParticles.Stop();
+            }
         }
         playerRb.freezeRotation = false;
     }

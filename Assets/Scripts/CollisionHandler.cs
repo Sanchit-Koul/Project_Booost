@@ -9,6 +9,8 @@ namespace Assets.Scripts
         [SerializeField] float levelLoadDelayTime = 1f;
         [SerializeField] AudioClip crashAudio;
         [SerializeField] AudioClip successAudio;
+        [SerializeField] ParticleSystem successParticles;
+        [SerializeField] ParticleSystem crashParticles;
 
         AudioSource audioSource;
         float initialVolume;
@@ -45,6 +47,8 @@ namespace Assets.Scripts
             isTransitioning = true;
             StopAllCoroutines();
             GetComponent<Movement>().enabled = false;
+            transform.rotation = Quaternion.identity;
+            successParticles.Play();
             audioSource.Stop();
             audioSource.volume = initialVolume;
             audioSource.PlayOneShot(successAudio);
@@ -58,7 +62,9 @@ namespace Assets.Scripts
             GetComponent<Movement>().enabled = false;
             audioSource.Stop();
             audioSource.volume = initialVolume;
+            DisableMeshRendererOnChildren();
             audioSource.PlayOneShot(crashAudio);
+            crashParticles.Play();
             //GetComponent<Rigidbody>().gameObject.SetActive(false);
             Invoke("ReloadScene", levelLoadDelayTime);
         }
@@ -76,6 +82,19 @@ namespace Assets.Scripts
                 nextSceneIndex = 0;
             }
             SceneManager.LoadScene(nextSceneIndex);
+        }
+
+        void DisableMeshRendererOnChildren()
+        {
+            foreach (var mesh in GetComponentsInChildren<MeshRenderer>())
+            {
+                mesh.enabled = false;
+            }
+        }
+
+        void StopAllParticles()
+        {
+            leftThrustParticles
         }
     }
 }
