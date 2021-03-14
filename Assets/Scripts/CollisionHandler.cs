@@ -91,10 +91,5 @@ namespace Assets.Scripts
                 mesh.enabled = false;
             }
         }
-
-        void StopAllParticles()
-        {
-            leftThrustParticles
-        }
     }
 }
