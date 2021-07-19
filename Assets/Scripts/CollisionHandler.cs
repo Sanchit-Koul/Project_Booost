@@ -62,8 +62,9 @@ namespace Assets.Scripts
             GetComponent<Movement>().enabled = false;
             audioSource.Stop();
             audioSource.volume = initialVolume;
+            Debug.Log("Starting volume for crash : " + audioSource.volume);
             DisableMeshRendererOnChildren();
-            audioSource.PlayOneShot(crashAudio);
+            audioSource.PlayOneShot(crashAudio, 1f);
             crashParticles.Play();
             //GetComponent<Rigidbody>().gameObject.SetActive(false);
             Invoke("ReloadScene", levelLoadDelayTime);
