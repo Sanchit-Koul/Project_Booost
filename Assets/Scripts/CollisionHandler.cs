@@ -60,7 +60,8 @@ namespace Assets.Scripts
             isTransitioning = true;
             StopAllCoroutines();
             GetComponent<Movement>().enabled = false;
-            audioSource.Stop();
+            Movement.audioSource.Stop();
+            //audioSource.Stop();
             audioSource.volume = initialVolume;
             Debug.Log("Starting volume for crash : " + audioSource.volume);
             DisableMeshRendererOnChildren();
