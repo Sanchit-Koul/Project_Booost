@@ -30,7 +30,6 @@ namespace Assets.Scripts
                 switch (collision.gameObject.tag)
                 {
                     case ("Friendly"):
-                        Debug.Log("Friendly");
                         break;
                     case ("Finish"):
                         SuccessHandler();
@@ -48,10 +47,12 @@ namespace Assets.Scripts
             StopAllCoroutines();
             GetComponent<Movement>().enabled = false;
             transform.rotation = Quaternion.identity;
-            successParticles.Play();
+            
             audioSource.Stop();
             audioSource.volume = initialVolume;
-            audioSource.PlayOneShot(successAudio);
+            audioSource.PlayOneShot(successAudio, 1f);
+            successParticles.Play();
+
             Invoke("LoadNextLevel", levelLoadDelayTime);
         }
 
@@ -60,14 +61,15 @@ namespace Assets.Scripts
             isTransitioning = true;
             StopAllCoroutines();
             GetComponent<Movement>().enabled = false;
-            Movement.audioSource.Stop();
-            //audioSource.Stop();
-            audioSource.volume = initialVolume;
-            Debug.Log("Starting volume for crash : " + audioSource.volume);
+            GetComponent<Movement>().enabled = false;
             DisableMeshRendererOnChildren();
+            DisableLightsOnChildren();
+
+            audioSource.Stop();
+            audioSource.volume = initialVolume;
+            audioSource.loop = false;
             audioSource.PlayOneShot(crashAudio, 1f);
             crashParticles.Play();
-            //GetComponent<Rigidbody>().gameObject.SetActive(false);
             Invoke("ReloadScene", levelLoadDelayTime);
         }
 
@@ -91,6 +93,14 @@ namespace Assets.Scripts
             foreach (var mesh in GetComponentsInChildren<MeshRenderer>())
             {
                 mesh.enabled = false;
+            }
+        }
+
+        void DisableLightsOnChildren()
+        {
+            foreach (var light in GetComponentsInChildren<Light>())
+            {
+                light.enabled = false;
             }
         }
     }

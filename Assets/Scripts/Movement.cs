@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
 
     float startVolume = 0f;
     Rigidbody playerRb;
-    public static AudioSource audioSource;
+    AudioSource audioSource;
     Coroutine fadeOutCouroutine;
     Coroutine fadeInCouroutine;
     Transform playerTransform;
