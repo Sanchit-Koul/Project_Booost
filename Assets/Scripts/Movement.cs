@@ -33,6 +33,10 @@ public class Movement : MonoBehaviour
     void Update()
     {
         playerTransform = GetComponent<Transform>();
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
         ProcessThrust();
         ProcessRotation();
     }
